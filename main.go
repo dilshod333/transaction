@@ -29,13 +29,13 @@ func main() {
 	dbInfo := fmt.Sprintf("host=%s user=%s password=%s port=%d dbname=%s sslmode=disable",host, user,password,port, dbname)
 	db,err = sql.Open("postgres", dbInfo)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	defer db.Close()
 
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	new := Product{
@@ -48,7 +48,7 @@ func main() {
 						   VALUES ($1, $2, $3, $4)`, new.ProductName, new.CategoryID, new.Unit, new.Price)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 
@@ -62,7 +62,7 @@ func main() {
 	)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	fmt.Printf("get back product: %v\n", productGet)
 
@@ -70,7 +70,7 @@ func main() {
 	_, err = tx.Exec("UPDATE products SET price = $1 WHERE product_name = $2", 25.99, new.ProductName)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 
@@ -84,7 +84,7 @@ func main() {
 	)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	fmt.Printf("updated product: %v\n", modifProduct)
 
@@ -92,12 +92,12 @@ func main() {
 	_, err = tx.Exec("delete from products where product_name = $1", new.ProductName)
 	if err != nil {
 		tx.Rollback()
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 
 	err = tx.Commit()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 }
